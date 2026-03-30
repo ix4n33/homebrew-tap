@@ -99,22 +99,26 @@ def download_and_sha256(url: str):
         if tmp_path.exists():
             tmp_path.unlink()
 
-
 def update_cask_file(cask_path: Path, version: str, arm_sha: str, intel_sha: str):
-    log(f"[INFO] Updating cask file: {cask_path}")
-    text = cask_path.read_text(encoding="utf-8")
+      log(f"[INFO] Updating cask file: {cask_path}")
+      text = cask_path.read_text(encoding="utf-8")
 
-    text = re.sub(r'version\s+"[^"]+"', f'version "{version}"', text)
-    text = re.sub(
-        r'sha256 arm:\s*"[^"]+",\s*intel:\s*"[^"]+"',
-        f'sha256 arm: "{arm_sha}",\n         intel: "{intel_sha}"',
-        text,
-        flags=re.S,
-    )
+      text = re.sub(r'version\s+"[^"]+"', f'version "{version}"', text)
+      text = re.sub(
+          r'(on_arm do.*?sha256\s+)"[^"]+"',
+          rf'\g<1>"{arm_sha}"',
+          text,
+          flags=re.S,
+      )
+      text = re.sub(
+          r'(on_intel do.*?sha256\s+)"[^"]+"',
+          rf'\g<1>"{intel_sha}"',
+          text,
+          flags=re.S,
+      )
 
-    cask_path.write_text(text, encoding="utf-8")
-    log(f"[INFO] Updated version={version} in {cask_path}")
-
+      cask_path.write_text(text, encoding="utf-8")
+      log(f"[INFO] Updated version={version} in {cask_path}")
 
 def process_target(name: str, target: dict):
     log(f"[INFO] Processing target: {name}")
