@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import hashlib
 import json
+import os
 import sys
 import tempfile
 import urllib.request
@@ -30,13 +31,14 @@ def log(msg: str):
 
 def github_get_json(url: str):
     log(f"[INFO] Fetching JSON: {url}")
-    req = urllib.request.Request(
-        url,
-        headers={
-            "Accept": "application/vnd.github+json",
-            "User-Agent": "homebrew-tap-updater",
-        },
-    )
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "homebrew-tap-updater",
+    }
+    token = os.environ.get("GITHUB_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
         data = resp.read().decode("utf-8")
         log(f"[INFO] JSON fetched: {len(data)} bytes")
