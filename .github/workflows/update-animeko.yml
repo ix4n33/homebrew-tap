@@ -29,7 +29,8 @@ jobs:
             - name: Audit casks
               run: |
                   for file in Casks/*.rb; do
-                    brew audit --cask --online "$file" || true
+                    name=$(basename "$file" .rb)
+                    brew audit --cask --online "$name" || true
                   done
 
             - name: Commit changes
