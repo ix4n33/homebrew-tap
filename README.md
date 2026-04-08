@@ -1,6 +1,4 @@
-A custom homebrew tap.
-
-This tap is for personal use.
+A custom homebrew tap, for personal use only.
 
 ## Usage
 
