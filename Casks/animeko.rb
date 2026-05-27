@@ -1,16 +1,16 @@
 cask "animeko" do
-    version "5.5.1"
+    version "5.5.2"
 
     on_arm do
       url "https://d.myani.org/v#{version}/ani-#{version}-macos-aarch64.dmg"
       # url "https://github.com/open-ani/animeko/releases/download/v#{version}/ani-#{version}-macos-aarch64.dmg"
-      sha256 "0ae4c7cb58ecc6f17fa5734196f56796c555af9b0aff0309bb2e26c6401d0320"
+      sha256 "dd93e487c242ae70b640dc79353af50085df8bdced72896c7a63b666b7060f45"
     end
 
     on_intel do
       url "https://d.myani.org/v#{version}/ani-#{version}-macos-x86_64.zip"
       # url "https://github.com/open-ani/animeko/releases/download/v#{version}/ani-#{version}-macos-x86_64.zip"
-      sha256 "1660c998a45612e0de95bfcecbd860f66148e4cfaf09bfec5110e9f5be4d8f1f"
+      sha256 "eca39aa00534b529e35692743e1b960c61b843041b010d49f8ad5eac70a7c191"
     end
 
     name "Animeko"
