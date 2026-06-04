@@ -1,0 +1,27 @@
+[casks.animeko]
+name = "Animeko"
+desc = "Animeko stable release"
+homepage = "https://github.com/open-ani/animeko"
+app = "Ani.app"
+
+source.type = "github_release"
+source.repo = "open-ani/animeko"
+source.prerelease = false
+source.version_prefix = "v"
+
+artifacts.arm.url = "https://d.myani.org/v{version}/ani-{version}-macos-aarch64.dmg"
+artifacts.arm.asset = "ani-{version}-macos-aarch64.dmg"
+
+[casks."animeko@beta"]
+name = "Animeko Beta"
+desc = "Animeko beta release"
+homepage = "https://github.com/open-ani/animeko"
+app = "Ani.app"
+
+source.type = "github_release"
+source.repo = "open-ani/animeko"
+source.prerelease = true
+source.version_prefix = "v"
+
+artifacts.arm.url = "https://d.myani.org/v{version}/ani-{version}-macos-aarch64.dmg"
+artifacts.arm.asset = "ani-{version}-macos-aarch64.dmg"

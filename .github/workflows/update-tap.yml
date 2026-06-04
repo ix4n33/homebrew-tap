@@ -1,0 +1,61 @@
+name: Update Tap
+
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: "0 3 * * *"
+
+jobs:
+    update:
+        runs-on: macos-latest
+
+        permissions:
+            contents: write
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.11"
+
+            - name: Generate tap files
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: python3 scripts/generate.py
+
+            - name: Audit casks
+              run: |
+                  if [ -d Casks ]; then
+                    for file in Casks/*.rb; do
+                      name=$(basename "$file" .rb)
+                      brew audit --cask --online "$name" || true
+                    done
+                  fi
+
+            - name: Audit formulae
+              run: |
+                  if [ -d Formula ]; then
+                    for file in Formula/*.rb; do
+                      [ -e "$file" ] || continue
+                      name=$(basename "$file" .rb)
+                      brew audit --formula --online "$name" || true
+                    done
+                  fi
+
+            - name: Commit changes
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git add Casks sources.toml
+                  if [ -d Formula ]; then
+                    git add Formula
+                  fi
+                  if ! git diff --cached --quiet; then
+                    git commit -m "Update generated tap files"
+                  fi
+
+            - name: Push changes
+              run: git push
