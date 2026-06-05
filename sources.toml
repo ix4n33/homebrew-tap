@@ -1,6 +1,6 @@
 [casks.animeko]
 name = "Animeko"
-desc = "Animeko stable release"
+desc = "Anime streaming client stable release"
 homepage = "https://github.com/open-ani/animeko"
 app = "Ani.app"
 
@@ -11,10 +11,11 @@ source.version_prefix = "v"
 
 artifacts.arm.url = "https://d.myani.org/v{version}/ani-{version}-macos-aarch64.dmg"
 artifacts.arm.asset = "ani-{version}-macos-aarch64.dmg"
+artifacts.arm.verified = "github.com/open-ani/animeko/"
 
 [casks."animeko@beta"]
 name = "Animeko Beta"
-desc = "Animeko beta release"
+desc = "Anime streaming client beta release"
 homepage = "https://github.com/open-ani/animeko"
 app = "Ani.app"
 
@@ -25,3 +26,18 @@ source.version_prefix = "v"
 
 artifacts.arm.url = "https://d.myani.org/v{version}/ani-{version}-macos-aarch64.dmg"
 artifacts.arm.asset = "ani-{version}-macos-aarch64.dmg"
+artifacts.arm.verified = "github.com/open-ani/animeko/"
+
+[casks.codex-plus-plus]
+name = "Codex++"
+desc = "Enhancement launcher and manager for Codex App"
+homepage = "https://github.com/BigPizzaV3/CodexPlusPlus"
+app = ["Codex++.app", "Codex++ 管理工具.app"]
+
+source.type = "github_release"
+source.repo = "BigPizzaV3/CodexPlusPlus"
+source.prerelease = false
+source.version_prefix = "v"
+
+artifacts.arm.url = "https://github.com/BigPizzaV3/CodexPlusPlus/releases/download/v{version}/CodexPlusPlus-{version}-macos-arm64.dmg"
+artifacts.arm.asset = "CodexPlusPlus-{version}-macos-arm64.dmg"

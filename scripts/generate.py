@@ -5,6 +5,7 @@ import json
 import os
 import re
 import tempfile
+import time
 import tomllib
 import urllib.request
 from pathlib import Path
@@ -75,6 +76,24 @@ def find_release_asset(release: dict, asset_name: str):
     )
 
 
+def format_size(size: int | None):
+    if size is None:
+        return "unknown"
+    if size < 1024:
+        return f"{size} B"
+    if size < 1024 * 1024:
+        return f"{size / 1024:.2f} KiB"
+    return f"{size / 1024 / 1024:.2f} MiB"
+
+
+def format_speed(bytes_per_second: float):
+    if bytes_per_second < 1024:
+        return f"{bytes_per_second:.2f} B/s"
+    if bytes_per_second < 1024 * 1024:
+        return f"{bytes_per_second / 1024:.2f} KiB/s"
+    return f"{bytes_per_second / 1024 / 1024:.2f} MiB/s"
+
+
 def download_and_sha256(url: str):
     log(f"[INFO] Downloading: {url}")
     digest = hashlib.sha256()
@@ -89,6 +108,9 @@ def download_and_sha256(url: str):
             headers={"User-Agent": "homebrew-tap-generator"},
         )
         with urllib.request.urlopen(req, timeout=TIMEOUT) as response:
+            total_header = response.headers.get("Content-Length")
+            total_size = int(total_header) if total_header else None
+            start_time = time.monotonic()
             with tmp_path.open("wb") as file:
                 while True:
                     chunk = response.read(1024 * 1024)
@@ -97,14 +119,39 @@ def download_and_sha256(url: str):
                     file.write(chunk)
                     digest.update(chunk)
                     total += len(chunk)
-                    log(f"[INFO] Downloaded {total / 1024 / 1024:.2f} MiB")
+                    elapsed = max(time.monotonic() - start_time, 0.001)
+                    speed = total / elapsed
+                    percentage = (
+                        f"{total / total_size * 100:.2f}%"
+                        if total_size
+                        else "unknown"
+                    )
+                    print(
+                        "\r"
+                        f"[INFO] Progress: downloaded={format_size(total)} "
+                        f"total={format_size(total_size)} "
+                        f"percentage={percentage} "
+                        f"speed={format_speed(speed)}",
+                        end="",
+                        flush=True,
+                    )
 
+        print()
         sha256 = digest.hexdigest()
         log(f"[INFO] SHA256: {sha256}")
         return sha256
     finally:
         if tmp_path.exists():
             tmp_path.unlink()
+
+
+def asset_sha256(asset: dict):
+    digest = asset.get("digest")
+    if isinstance(digest, str) and digest.startswith("sha256:"):
+        sha256 = digest.removeprefix("sha256:")
+        log(f"[INFO] SHA256 from release asset digest: {sha256}")
+        return sha256
+    return download_and_sha256(asset["browser_download_url"])
 
 
 def require(data: dict, key: str):
@@ -126,6 +173,13 @@ def ruby_string(value: str):
     return str(value).replace("\\", "\\\\").replace('"', '\\"')
 
 
+def render_url_stanza(url: str, verified: str | None, indent: str = "  "):
+    line = f'{indent}url "{ruby_string(url)}"'
+    if verified:
+        line += f', verified: "{ruby_string(verified)}"'
+    return line
+
+
 def formula_class_name(token: str):
     parts = re.split(r"[^A-Za-z0-9]+", token)
     return "".join(part[:1].upper() + part[1:] for part in parts if part)
@@ -138,12 +192,24 @@ def render_cask(token: str, config: dict, version: str, artifacts: dict):
         "",
     ]
 
-    if "arm" in artifacts:
+    if set(artifacts) == {"arm"}:
         arm = artifacts["arm"]
         lines.extend(
             [
                 "  on_arm do",
-                f'    url "{ruby_string(arm["url"])}"',
+                f'    sha256 "{ruby_string(arm["sha256"])}"',
+                "",
+                render_url_stanza(arm["url"], arm.get("verified"), "    "),
+                "  end",
+                "",
+            ]
+        )
+    elif "arm" in artifacts:
+        arm = artifacts["arm"]
+        lines.extend(
+            [
+                "  on_arm do",
+                render_url_stanza(arm["url"], arm.get("verified"), "    "),
                 f'    sha256 "{ruby_string(arm["sha256"])}"',
                 "  end",
                 "",
@@ -155,7 +221,7 @@ def render_cask(token: str, config: dict, version: str, artifacts: dict):
         lines.extend(
             [
                 "  on_intel do",
-                f'    url "{ruby_string(intel["url"])}"',
+                render_url_stanza(intel["url"], intel.get("verified"), "    "),
                 f'    sha256 "{ruby_string(intel["sha256"])}"',
                 "  end",
                 "",
@@ -167,11 +233,21 @@ def render_cask(token: str, config: dict, version: str, artifacts: dict):
             f'  name "{ruby_string(require(config, "name"))}"',
             f'  desc "{ruby_string(require(config, "desc"))}"',
             f'  homepage "{ruby_string(require(config, "homepage"))}"',
-            f'  app "{ruby_string(require(config, "app"))}"',
-            "end",
-            "",
         ]
     )
+
+    if set(artifacts) == {"arm"}:
+        lines.extend(["", "  depends_on :macos", "  depends_on arch: :arm64"])
+
+    apps = require(config, "app")
+    if isinstance(apps, str):
+        apps = [apps]
+    if set(artifacts) == {"arm"}:
+        lines.append("")
+    for app_name in apps:
+        lines.append(f'  app "{ruby_string(app_name)}"')
+
+    lines.extend(["end", ""])
     return "\n".join(lines)
 
 
@@ -216,8 +292,12 @@ def resolve_cask_artifacts(config: dict, version: str, release: dict):
         asset_name = render_url(require(artifact, "asset"), version)
         release_asset = find_release_asset(release, asset_name)
         url = render_cask_url(require(artifact, "url"))
-        sha256 = download_and_sha256(release_asset["browser_download_url"])
-        resolved[arch] = {"url": url, "sha256": sha256}
+        sha256 = asset_sha256(release_asset)
+        resolved[arch] = {
+            "url": url,
+            "sha256": sha256,
+            "verified": artifact.get("verified"),
+        }
     return resolved
 
 
@@ -231,8 +311,24 @@ def resolve_formula_artifact(config: dict, version: str, release: dict):
         if url_template
         else release_asset["browser_download_url"]
     )
-    sha256 = download_and_sha256(release_asset["browser_download_url"])
+    sha256 = asset_sha256(release_asset)
     return {"url": url, "sha256": sha256}
+
+
+def filter_selected(items: dict, selected: set[str], only_enabled: bool, kind: str):
+    if not only_enabled:
+        return items
+    if not items:
+        return {}
+
+    filtered = {token: config for token, config in items.items() if token in selected}
+    for token in filtered:
+        selected.remove(token)
+    if filtered:
+        return filtered
+
+    log(f"[INFO] No selected {kind} matched")
+    return {}
 
 
 def generate_casks(casks: dict):
@@ -267,11 +363,27 @@ def main():
         default=SOURCES_FILE,
         help="Path to sources.toml",
     )
+    parser.add_argument(
+        "--only",
+        action="append",
+        default=[],
+        metavar="TOKEN",
+        help="Only generate selected cask or formula token. May be passed multiple times.",
+    )
     args = parser.parse_args()
 
     sources = load_sources(args.sources)
-    generate_casks(sources.get("casks", {}))
-    generate_formulae(sources.get("formulae", {}))
+    only_enabled = bool(args.only)
+    selected = set(args.only)
+    generate_casks(
+        filter_selected(sources.get("casks", {}), selected, only_enabled, "cask")
+    )
+    generate_formulae(
+        filter_selected(sources.get("formulae", {}), selected, only_enabled, "formula")
+    )
+    if selected:
+        missing = ", ".join(sorted(selected))
+        raise RuntimeError(f"Selected token not found: {missing}")
     log("[INFO] All done")
 
 
