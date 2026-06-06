@@ -41,3 +41,19 @@ source.version_prefix = "v"
 
 artifacts.arm.url = "https://github.com/BigPizzaV3/CodexPlusPlus/releases/download/v{version}/CodexPlusPlus-{version}-macos-arm64.dmg"
 artifacts.arm.asset = "CodexPlusPlus-{version}-macos-arm64.dmg"
+
+[casks.sparkle]
+name = "Sparkle"
+desc = "Mihomo proxy client"
+homepage = "https://github.com/xishang0128/sparkle"
+pkg = "sparkle-macos-{version}-arm64.pkg"
+macos = "monterey"
+
+source.type = "github_release"
+source.repo = "xishang0128/sparkle"
+source.prerelease = false
+
+artifacts.arm.url = "https://github.com/xishang0128/sparkle/releases/download/{version}/sparkle-macos-{version}-arm64.pkg"
+artifacts.arm.asset = "sparkle-macos-{version}-arm64.pkg"
+
+uninstall.pkgutil = "sparkle.app"

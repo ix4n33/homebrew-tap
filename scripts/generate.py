@@ -237,15 +237,39 @@ def render_cask(token: str, config: dict, version: str, artifacts: dict):
     )
 
     if set(artifacts) == {"arm"}:
-        lines.extend(["", "  depends_on :macos", "  depends_on arch: :arm64"])
+        macos = config.get("macos")
+        if macos:
+            lines.extend(["", f"  depends_on macos: :{ruby_string(macos)}"])
+        else:
+            lines.extend(["", "  depends_on :macos"])
+        lines.append("  depends_on arch: :arm64")
 
-    apps = require(config, "app")
-    if isinstance(apps, str):
-        apps = [apps]
+    apps = config.get("app")
+    pkg = config.get("pkg")
+    if not apps and not pkg:
+        raise RuntimeError(f"Missing required app or pkg for cask: {token}")
+
     if set(artifacts) == {"arm"}:
         lines.append("")
-    for app_name in apps:
-        lines.append(f'  app "{ruby_string(app_name)}"')
+
+    if pkg:
+        lines.append(f'  pkg "{ruby_string(render_cask_url(pkg))}"')
+
+    if apps:
+        if isinstance(apps, str):
+            apps = [apps]
+        for app_name in apps:
+            lines.append(f'  app "{ruby_string(app_name)}"')
+
+    uninstall = config.get("uninstall", {})
+    pkgutil = uninstall.get("pkgutil")
+    if pkgutil:
+        lines.extend(
+            [
+                "",
+                "  uninstall pkgutil: " f'"{ruby_string(pkgutil)}"',
+            ]
+        )
 
     lines.extend(["end", ""])
     return "\n".join(lines)
