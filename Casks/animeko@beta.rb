@@ -1,8 +1,8 @@
 cask "animeko@beta" do
-  version "5.6.0-alpha01"
+  version "5.7.0-alpha01"
 
   on_arm do
-    sha256 "6622b20d1f85144a94e4d67c972c9cd077ffc0f82f1bfa1372473c57d1b378a6"
+    sha256 "83dfab1a9127ff40e010fbda3e09f460ff76629dc9883ba79007f3a3d259f5d8"
 
     url "https://d.myani.org/v#{version}/ani-#{version}-macos-aarch64.dmg", verified: "github.com/open-ani/animeko/"
   end
