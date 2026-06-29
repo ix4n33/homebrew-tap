@@ -1,8 +1,8 @@
 cask "codex-plus-plus" do
-  version "1.2.21"
+  version "1.2.24"
 
   on_arm do
-    sha256 "5d3597c628e7fdaa1453f3c42a73e0b0450e5400bc081e62d80437923d37c7dd"
+    sha256 "e0188a3bdd17e0b81c7e492fe1b694f8b9a41604e08cf00140d4f8e931c41e52"
 
     url "https://github.com/BigPizzaV3/CodexPlusPlus/releases/download/v#{version}/CodexPlusPlus-#{version}-macos-arm64.dmg"
   end
