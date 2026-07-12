@@ -44,20 +44,27 @@ def github_get_json(url: str):
 
 def latest_github_release(source: dict):
     repo = require(source, "repo")
-    prerelease = bool(source.get("prerelease", False))
+    version_prefix = source.get("version_prefix", "")
+    version_match = source.get("version_match")
+    match_re = re.compile(version_match) if version_match else None
     releases = github_get_json(f"https://api.github.com/repos/{repo}/releases")
 
     for release in releases:
-        if bool(release.get("prerelease")) == prerelease:
-            tag_name = require(release, "tag_name")
-            version_prefix = source.get("version_prefix", "")
-            version = tag_name
-            if version_prefix and version.startswith(version_prefix):
-                version = version[len(version_prefix) :]
-            log(f"[INFO] Matched release {tag_name} for {repo}")
-            return version, release
+        if release.get("draft"):
+            continue
+        tag_name = require(release, "tag_name")
+        version = tag_name
+        if version_prefix and version.startswith(version_prefix):
+            version = version[len(version_prefix):]
+        if match_re is not None:
+            if not match_re.search(version):
+                continue
+        elif release.get("prerelease"):
+            continue
+        log(f"[INFO] Matched release {tag_name} for {repo}")
+        return version, release
 
-    raise RuntimeError(f"No release found for repo={repo} prerelease={prerelease}")
+    raise RuntimeError(f"No release found for repo={repo}")
 
 
 def resolve_source(source: dict):

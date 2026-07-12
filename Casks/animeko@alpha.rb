@@ -1,14 +1,14 @@
-cask "animeko@beta" do
-  version "5.7.1"
+cask "animeko@alpha" do
+  version "6.0.0-alpha01"
 
   on_arm do
-    sha256 "3225bfed03c9e2d4912d3e8ba0fb408fe85f2f843c6b5f46c636c44b13649b3a"
+    sha256 "3b4121d1cdf9a4d0a30bb8361e8a9fdaed8e12457019b8a34c7b3e4b2ec4ef2f"
 
     url "https://d.myani.org/v#{version}/ani-#{version}-macos-aarch64.dmg", verified: "github.com/open-ani/animeko/"
   end
 
-  name "Animeko Beta"
-  desc "Anime streaming client beta release"
+  name "Animeko Alpha"
+  desc "Anime streaming client alpha release"
   homepage "https://github.com/open-ani/animeko"
 
   depends_on :macos

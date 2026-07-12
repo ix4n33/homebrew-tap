@@ -6,7 +6,6 @@ app = "Ani.app"
 
 source.type = "github_release"
 source.repo = "open-ani/animeko"
-source.prerelease = false
 source.version_prefix = "v"
 
 artifacts.arm.url = "https://d.myani.org/v{version}/ani-{version}-macos-aarch64.dmg"
@@ -21,8 +20,23 @@ app = "Ani.app"
 
 source.type = "github_release"
 source.repo = "open-ani/animeko"
-source.prerelease = true
 source.version_prefix = "v"
+source.version_match = '^\d+\.\d+\.\d+(\-beta\d*)?$'
+
+artifacts.arm.url = "https://d.myani.org/v{version}/ani-{version}-macos-aarch64.dmg"
+artifacts.arm.asset = "ani-{version}-macos-aarch64.dmg"
+artifacts.arm.verified = "github.com/open-ani/animeko/"
+
+[casks."animeko@alpha"]
+name = "Animeko Alpha"
+desc = "Anime streaming client alpha release"
+homepage = "https://github.com/open-ani/animeko"
+app = "Ani.app"
+
+source.type = "github_release"
+source.repo = "open-ani/animeko"
+source.version_prefix = "v"
+source.version_match = '^\d+\.\d+\.\d+(\-(alpha|beta)\d*)?$'
 
 artifacts.arm.url = "https://d.myani.org/v{version}/ani-{version}-macos-aarch64.dmg"
 artifacts.arm.asset = "ani-{version}-macos-aarch64.dmg"
@@ -36,7 +50,6 @@ app = ["Codex++.app", "Codex++ 管理工具.app"]
 
 source.type = "github_release"
 source.repo = "BigPizzaV3/CodexPlusPlus"
-source.prerelease = false
 source.version_prefix = "v"
 
 artifacts.arm.url = "https://github.com/BigPizzaV3/CodexPlusPlus/releases/download/v{version}/CodexPlusPlus-{version}-macos-arm64.dmg"
@@ -51,7 +64,6 @@ macos = "monterey"
 
 source.type = "github_release"
 source.repo = "xishang0128/sparkle"
-source.prerelease = false
 
 artifacts.arm.url = "https://github.com/xishang0128/sparkle/releases/download/{version}/sparkle-macos-{version}-arm64.pkg"
 artifacts.arm.asset = "sparkle-macos-{version}-arm64.pkg"
