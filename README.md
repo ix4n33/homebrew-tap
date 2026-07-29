@@ -14,3 +14,13 @@ Edit `sources.toml` to add or update casks and formulae. The Ruby files under
 ```bash
 python3 scripts/generate.py
 ```
+
+## Tips
+
+### Update a Homebrew Tap Manually
+
+To pull latest changes of a tap, instead of untap and tap, you can manually perform `git pull`:
+
+```bash
+cd /opt/homebrew/Library/Taps/<USER>/<REPO> && git pull
+```
