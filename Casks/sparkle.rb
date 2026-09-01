@@ -1,8 +1,8 @@
 cask "sparkle" do
-  version "1.26.7"
+  version "1.26.8"
 
   on_arm do
-    sha256 "89cfdc4c816dd2ae2b83f7ef7c9e3c848430206b415e11f14ccb70aaa21dd305"
+    sha256 "4de46fa6871200ba4e7bf487e3e7920e9dc0190ffb89fef1d4e77db262cf26c1"
 
     url "https://github.com/xishang0128/sparkle/releases/download/#{version}/sparkle-macos-#{version}-arm64.pkg"
   end
