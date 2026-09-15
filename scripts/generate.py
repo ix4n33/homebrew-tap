@@ -180,14 +180,11 @@ def ruby_string(value: str):
     return str(value).replace("\\", "\\\\").replace('"', '\\"')
 
 
-def render_url_stanza(url: str, verified: str | None, indent: str = "  "):
-    line = f'{indent}url "{ruby_string(url)}"'
-    if verified:
-        line += f', verified: "{ruby_string(verified)}"'
-    return line
+def render_url_stanza(url: str, indent: str = "  "):
+    return f'{indent}url "{ruby_string(url)}"'
 
 
-def formula_class_name(token: str):
+
     parts = re.split(r"[^A-Za-z0-9]+", token)
     return "".join(part[:1].upper() + part[1:] for part in parts if part)
 
@@ -206,7 +203,7 @@ def render_cask(token: str, config: dict, version: str, artifacts: dict):
                 "  on_arm do",
                 f'    sha256 "{ruby_string(arm["sha256"])}"',
                 "",
-                render_url_stanza(arm["url"], arm.get("verified"), "    "),
+                render_url_stanza(arm["url"], "    "),
                 "  end",
                 "",
             ]
@@ -216,7 +213,7 @@ def render_cask(token: str, config: dict, version: str, artifacts: dict):
         lines.extend(
             [
                 "  on_arm do",
-                render_url_stanza(arm["url"], arm.get("verified"), "    "),
+                render_url_stanza(arm["url"], "    "),
                 f'    sha256 "{ruby_string(arm["sha256"])}"',
                 "  end",
                 "",
@@ -228,7 +225,7 @@ def render_cask(token: str, config: dict, version: str, artifacts: dict):
         lines.extend(
             [
                 "  on_intel do",
-                render_url_stanza(intel["url"], intel.get("verified"), "    "),
+                render_url_stanza(intel["url"], "    "),
                 f'    sha256 "{ruby_string(intel["sha256"])}"',
                 "  end",
                 "",
@@ -327,7 +324,6 @@ def resolve_cask_artifacts(config: dict, version: str, release: dict):
         resolved[arch] = {
             "url": url,
             "sha256": sha256,
-            "verified": artifact.get("verified"),
         }
     return resolved
 
