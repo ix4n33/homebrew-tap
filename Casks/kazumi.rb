@@ -14,5 +14,7 @@ cask "kazumi" do
   name "Kazumi"
   desc "Anime streaming client"
   homepage "https://github.com/Predidit/Kazumi"
+
+  depends_on macos: :monterey
   app "Kazumi.app"
 end

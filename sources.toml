@@ -48,6 +48,7 @@ app = ["Codex++.app", "Codex++ 管理工具.app"]
 source.type = "github_release"
 source.repo = "BigPizzaV3/CodexPlusPlus"
 source.version_prefix = "v"
+macos = "monterey"
 
 artifacts.arm.url = "https://github.com/BigPizzaV3/CodexPlusPlus/releases/download/v{version}/CodexPlusPlus-{version}-macos-universal.dmg"
 artifacts.arm.asset = "CodexPlusPlus-{version}-macos-universal.dmg"
@@ -77,6 +78,7 @@ app = "Kazumi.app"
 
 source.type = "github_release"
 source.repo = "Predidit/Kazumi"
+macos = "monterey"
 
 artifacts.arm.url = "https://github.com/Predidit/Kazumi/releases/download/{version}/Kazumi_macos_{version}.dmg"
 artifacts.arm.asset = "Kazumi_macos_{version}.dmg"

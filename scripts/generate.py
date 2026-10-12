@@ -240,12 +240,13 @@ def render_cask(token: str, config: dict, version: str, artifacts: dict):
         ]
     )
 
+    macos = config.get("macos")
+    if macos:
+        lines.extend(["", f"  depends_on macos: :{ruby_string(macos)}"])
+    elif set(artifacts) == {"arm"}:
+        lines.extend(["", "  depends_on :macos"])
+
     if set(artifacts) == {"arm"}:
-        macos = config.get("macos")
-        if macos:
-            lines.extend(["", f"  depends_on macos: :{ruby_string(macos)}"])
-        else:
-            lines.extend(["", "  depends_on :macos"])
         lines.append("  depends_on arch: :arm64")
 
     apps = config.get("app")

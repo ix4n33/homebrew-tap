@@ -14,6 +14,8 @@ cask "codex-plus-plus" do
   name "Codex++"
   desc "Enhancement launcher and manager for Codex App"
   homepage "https://github.com/BigPizzaV3/CodexPlusPlus"
+
+  depends_on macos: :monterey
   app "Codex++.app"
   app "Codex++ 管理工具.app"
 end
