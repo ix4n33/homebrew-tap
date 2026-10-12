@@ -49,8 +49,10 @@ source.type = "github_release"
 source.repo = "BigPizzaV3/CodexPlusPlus"
 source.version_prefix = "v"
 
-artifacts.arm.url = "https://github.com/BigPizzaV3/CodexPlusPlus/releases/download/v{version}/CodexPlusPlus-{version}-macos-arm64.dmg"
-artifacts.arm.asset = "CodexPlusPlus-{version}-macos-arm64.dmg"
+artifacts.arm.url = "https://github.com/BigPizzaV3/CodexPlusPlus/releases/download/v{version}/CodexPlusPlus-{version}-macos-universal.dmg"
+artifacts.arm.asset = "CodexPlusPlus-{version}-macos-universal.dmg"
+artifacts.intel.url = "https://github.com/BigPizzaV3/CodexPlusPlus/releases/download/v{version}/CodexPlusPlus-{version}-macos-universal.dmg"
+artifacts.intel.asset = "CodexPlusPlus-{version}-macos-universal.dmg"
 
 [casks.sparkle]
 name = "Sparkle"
@@ -66,3 +68,17 @@ artifacts.arm.url = "https://github.com/xishang0128/sparkle/releases/download/{v
 artifacts.arm.asset = "sparkle-macos-{version}-arm64.pkg"
 
 uninstall.pkgutil = "sparkle.app"
+
+[casks.kazumi]
+name = "Kazumi"
+desc = "Anime streaming client"
+homepage = "https://github.com/Predidit/Kazumi"
+app = "Kazumi.app"
+
+source.type = "github_release"
+source.repo = "Predidit/Kazumi"
+
+artifacts.arm.url = "https://github.com/Predidit/Kazumi/releases/download/{version}/Kazumi_macos_{version}.dmg"
+artifacts.arm.asset = "Kazumi_macos_{version}.dmg"
+artifacts.intel.url = "https://github.com/Predidit/Kazumi/releases/download/{version}/Kazumi_macos_{version}.dmg"
+artifacts.intel.asset = "Kazumi_macos_{version}.dmg"
