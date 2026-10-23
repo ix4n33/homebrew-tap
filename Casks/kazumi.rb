@@ -1,14 +1,14 @@
 cask "kazumi" do
-  version "2.3.9"
+  version "2.4.1"
 
   on_arm do
     url "https://github.com/Predidit/Kazumi/releases/download/#{version}/Kazumi_macos_#{version}.dmg"
-    sha256 "4b1f0c86fd23b5ee884d53864aaac78f97b3117fabb942ff18d351df8d0ca290"
+    sha256 "e331077f10428a8a50b16c0df485d5c25cec345d873eaaed0ee377ab16aa800b"
   end
 
   on_intel do
     url "https://github.com/Predidit/Kazumi/releases/download/#{version}/Kazumi_macos_#{version}.dmg"
-    sha256 "4b1f0c86fd23b5ee884d53864aaac78f97b3117fabb942ff18d351df8d0ca290"
+    sha256 "e331077f10428a8a50b16c0df485d5c25cec345d873eaaed0ee377ab16aa800b"
   end
 
   name "Kazumi"
