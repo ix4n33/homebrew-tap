@@ -1,14 +1,14 @@
 cask "codex-plus-plus" do
-  version "2.7.1"
+  version "2.7.2"
 
   on_arm do
     url "https://github.com/BigPizzaV3/CodexPlusPlus/releases/download/v#{version}/CodexPlusPlus-#{version}-macos-universal.dmg"
-    sha256 "41d5239dcdeecf75ebd68c26a340629df3eee5635b2d3113376fd5795d5f74ab"
+    sha256 "df40aa7684cf2a53ac47acd4c4ea1fae0f1c87e34575d1ad54e85803f30c96df"
   end
 
   on_intel do
     url "https://github.com/BigPizzaV3/CodexPlusPlus/releases/download/v#{version}/CodexPlusPlus-#{version}-macos-universal.dmg"
-    sha256 "41d5239dcdeecf75ebd68c26a340629df3eee5635b2d3113376fd5795d5f74ab"
+    sha256 "df40aa7684cf2a53ac47acd4c4ea1fae0f1c87e34575d1ad54e85803f30c96df"
   end
 
   name "Codex++"
